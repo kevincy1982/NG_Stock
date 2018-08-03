@@ -39,7 +39,7 @@ export class StockFormComponent implements OnInit {
       }
     )
     this.stockService.getStock(stockId)
-       .subscribe(
+       .subscribe(  // http call will only be triggered when subscribe is called.
          data => {
            this.stock = data;
            this.formModel.reset({
