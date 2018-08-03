@@ -6,70 +6,71 @@
       </div>
       <!-- /.box-header -->
       <!-- form start -->
-      <form class="form-horizontal">
+      <form [formGroup]="formModel" class="form-horizontal">
         <div class="box-body">
-          <div class="form-group">
+          <div class="form-group" [class.has-error]="formModel.get('name').touched && (formModel.hasError('minlength','name') || formModel.hasError('required', 'name'))">
             <label for="name" class="col-sm-2 control-label">Stock Name</label>
 
             <div class="col-sm-6">
-              <input type="text" class="form-control" id="name" placeholder="Stock Name">
+              <input formControlName="name" type="text" class="form-control" id="name" placeholder="Stock Name">
+            </div>
+            <div [class.hidden]="formModel.get('name').untouched">
+              <span class="help-block" [class.hidden]="!formModel.hasError('required','name')">
+                Name is mandatory
+              </span>
+              <span class="help-block" [class.hidden]="!formModel.hasError('minlength','name')">
+                  Min length is 3
+              </span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" [class.has-error]="formModel.get('price').touched && formModel.hasError('required','price')">
             <label for="price" class="col-sm-2 control-label">Stock Price</label>
-
             <div class="col-sm-8">
-              <input type="number" class="form-control" id="price" placeholder="Stock Price">
+              <input formControlName="price" type="number" class="form-control" id="price" placeholder="Stock Price">
             </div>
+            <div [class.hidden]="formModel.get('price').untouched">
+              <span class="help-block" [class.hidden]="!formModel.hasError('required','price')">
+                Price is mandatory
+              </span>
+             </div>
           </div>
           <div class="form-group">
               <label class="col-sm-2 control-label">Stock Rating</label>
   
               <div class="col-sm-10">
-                <app-stars [rating]="stock?.rating"></app-stars>
+                <app-stars [(rating)]="stock.rating" [readonly]="false"></app-stars>
               </div>
           </div>
           <div class="form-group">
               <label for="desc" class="col-sm-2 control-label">Stock Descprition</label>
   
               <div class="col-sm-10">
-                <textarea class="form-control" rows="5">{{stock.desc}}</textarea>
+                <textarea formControlName="desc" class="form-control" rows="5">{{stock.desc}}</textarea>
               </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" [class.has-error]="formModel.get('categories').touched && formModel.hasError('categoriesLength','categories')">
               <label for="desc" class="col-sm-2 control-label">Stock Category</label>
   
               <div class="col-sm-10">
-                <div class="row">
-                  <div class="col-sm-2">
+                <div class="row" formArrayName="categories">
+                  <div *ngFor="let category of categories; let i = index;" class="col-sm-2">
                         <div class="checkbox">
                           <label>
-                            <input type="checkbox"> IT
+                            <input [formControlName]="i" type="checkbox"> {{category}}
                           </label>
                         </div>
                   </div>
-                  <div class="col-sm-2">
-                        <div class="checkbox">
-                            <label>
-                              <input type="checkbox"> WEB
-                            </label>
-                        </div>
-                  </div>
-                  <div class="col-sm-2">
-                        <div class="checkbox">
-                              <label>
-                                <input type="checkbox"> FINANCE
-                              </label>
-                        </div>
-                  </div>
                 </div>
+                    <span class="help-block" [class.hidden]="formModel.get('categories').untouched || !formModel.hasError('categoriesLength','categories')">
+                        Categories is mandatory
+                    </span>
               </div>
           </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
-          <button (click)="cancel()" class="btn btn-default">Cancel</button>
-          <button (click)="save(stock)"  class="btn btn-info pull-right">Save</button>
+          <button (click)="cancel()"  class="btn btn-default">Cancel</button>
+          <button (click)="save(stock)" [disabled]="formModel.invalid" class="btn btn-info pull-right">Save</button>
         </div>
         <!-- /.box-footer -->
       </form>
